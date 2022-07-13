@@ -1,0 +1,30 @@
+#create project react
+yarn create vite frontend --template react-ts
+
+#install dependencies
+yarn
+
+#run as dev
+yarn dev
+
+#in pom.xml add plugin maven
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+	<version>3.1.0</version><!--$NO-MVN-MAN-VER$ -->
+</plugin>
+
+#add react-datepicker
+yarn add react-datepicker@4.8.0 @types/react-datepicker@4.4.2
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+<DatePicker
+    selected={new Date()}
+    onChange={(date: Date) => {}}
+    className="dsmeta-form-control"
+    dateFormat="dd/MM/yyyy"
+/>
+
+const date = new Date(new Date().setDate(new Date().getDate() - 365));
+const [minDate, setMinDate] = useState(date);
