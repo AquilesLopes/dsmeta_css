@@ -1,6 +1,9 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Sale } from "../../models/sale";
+import { BASE_URL } from "../../utils/request";
 import NotificationButton from '../NotificatonButton';
 import './styles.css';
 
@@ -9,6 +12,20 @@ function SalesCard() {
     const min = new Date(new Date().setDate(new Date().getDate() - 365));
     const [minDate, setMinDate] = useState(min);
     const [maxDate, setMaxDate] = useState(new Date());
+
+    const [sales, setSales] = useState<Sale[]>([]);
+
+    useEffect(() => {
+        const dmin = minDate.toISOString().slice(0, 10);
+        const dmax = maxDate.toISOString().slice(0, 10);
+        console.log(BASE_URL + "/api/v1/sales?minDate=" + dmin + "&maxDate=" + dmax);
+
+        axios.get(`${BASE_URL}/api/v1/sales?minDate=${dmin}&maxDate=${dmax}`)
+            .then(response => {
+                console.log(response.data);
+                setSales(response.data.content);
+            })
+    }, [minDate, maxDate]);
 
     return (
         <div className="dsmeta-card">
@@ -45,45 +62,23 @@ function SalesCard() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="show-992">1</td>
-                            <td className="show-576">08/07/2022</td>
-                            <td>Amanda</td>
-                            <td className="show-992">125</td>
-                            <td className="show-992">54</td>
-                            <td>R$ 1.500,00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="show-992">2</td>
-                            <td className="show-576">08/07/2022</td>
-                            <td>Anakin</td>
-                            <td className="show-992">105</td>
-                            <td className="show-992">35</td>
-                            <td>R$ 1.000,00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="show-992">3</td>
-                            <td className="show-576">09/07/2022</td>
-                            <td>Marcos</td>
-                            <td className="show-992">105</td>
-                            <td className="show-992">35</td>
-                            <td>R$ 1.000,00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
+                        {sales.map(sale => {
+                            return (
+                                <tr key={sale.id}>
+                                    <td className="show-992">{sale.id}</td>
+                                    <td className="show-576">{sale.date}</td>
+                                    <td>{sale.sellerName}</td>
+                                    <td className="show-992">{sale.visited}</td>
+                                    <td className="show-992">{sale.deals}</td>
+                                    <td>{sale.amount}</td>
+                                    <td>
+                                        <div className="dsmeta-red-btn-container">
+                                            <NotificationButton saleId={sale.id} />
+                                        </div>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>

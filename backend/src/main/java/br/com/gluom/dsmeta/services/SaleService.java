@@ -20,7 +20,7 @@ public class SaleService {
 
         LocalDate today = LocalDate.now();
 
-        LocalDate min = minDate.length() > 0 ? LocalDate.parse(minDate) : today.minusDays(30);
+        LocalDate min = minDate.length() > 0 ? LocalDate.parse(minDate) : today.minusDays(90);
         LocalDate max = maxDate.length() > 0 ? LocalDate.parse(maxDate) : today;
 
         return saleRepository.findSales(min, max, pageable);
